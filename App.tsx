@@ -15,6 +15,105 @@ const OTA_METHODS = [
   PaymentMethod.TIKTOK
 ];
 
+const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    // Simulate small delay for better UX
+    setTimeout(() => {
+      if (username === 'Garden Hotel' && password === 'Garden88') {
+        onLogin();
+      } else {
+        setError('Kredensial tidak valid. Silakan coba lagi.');
+        setIsLoading(false);
+      }
+    }, 800);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-500/10 rounded-full blur-[120px]"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px]"></div>
+      
+      <div className="w-full max-w-md animate-in fade-in zoom-in duration-500">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative z-10">
+          <div className="text-center mb-10">
+            <div className="w-20 h-20 bg-teal-500 rounded-3xl flex items-center justify-center text-white text-4xl font-black shadow-2xl shadow-teal-500/40 mx-auto mb-6 transform hover:rotate-6 transition-transform">A</div>
+            <h1 className="text-3xl font-black text-white tracking-tighter mb-2">ARv01 <span className="text-teal-500">HMS</span></h1>
+            <p className="text-slate-400 font-medium">Hotel Management System Access</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Username</label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">👤</span>
+                <input 
+                  type="text" 
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 transition-all font-medium"
+                  placeholder="Garden Hotel"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">🔑</span>
+                <input 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 transition-all font-medium"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            {error && (
+              <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 flex items-center gap-3 animate-in slide-in-from-top-2">
+                <span className="text-rose-500">⚠️</span>
+                <p className="text-xs font-bold text-rose-200">{error}</p>
+              </div>
+            )}
+
+            <button 
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 rounded-2xl shadow-xl shadow-teal-900/40 transition-all active:scale-95 flex items-center justify-center gap-2 group"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  SIGN IN TO SYSTEM
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-10 text-center">
+            <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Powered by Garden Management v1.0.2</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface BookingListProps {
   filteredBookings: Booking[];
   searchTerm: string;
@@ -600,7 +699,6 @@ const ViewBookingModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
       <div className="bg-white rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300 border border-slate-100">
-        {/* Compact Header - Ticket Style */}
         <div className="bg-slate-900 px-6 py-6 text-white relative">
           <button 
             onClick={onClose}
@@ -617,9 +715,7 @@ const ViewBookingModal: React.FC<{
           <p className="text-xs text-slate-400 font-medium mt-0.5">{booking.phone}</p>
         </div>
 
-        {/* Card Content */}
         <div className="p-6 bg-white space-y-6">
-          {/* Main Stats */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col items-center">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Room</span>
@@ -633,7 +729,6 @@ const ViewBookingModal: React.FC<{
             </div>
           </div>
 
-          {/* Date Range Block */}
           <div className="flex items-center justify-between px-4 py-3 bg-teal-50 rounded-2xl border border-teal-100">
             <div className="text-center">
               <p className="text-[9px] font-black text-teal-600 uppercase mb-0.5">Check-In</p>
@@ -646,7 +741,6 @@ const ViewBookingModal: React.FC<{
             </div>
           </div>
 
-          {/* Pricing Info */}
           <div className="space-y-3">
             <div className="flex justify-between items-center text-xs">
               <span className="font-bold text-slate-400 uppercase tracking-wider text-[9px]">Plan</span>
@@ -667,7 +761,6 @@ const ViewBookingModal: React.FC<{
             </div>
           </div>
 
-          {/* Notes Segment */}
           {booking.notes && (
             <div className="bg-amber-50 p-3 rounded-xl border border-amber-100">
               <p className="text-[9px] font-black text-amber-600 uppercase mb-1">Special Notes</p>
@@ -676,7 +769,6 @@ const ViewBookingModal: React.FC<{
           )}
         </div>
 
-        {/* Footer / Action */}
         <div className="p-4 bg-slate-50 border-t border-slate-100 flex flex-col gap-2">
            <div className="flex justify-between text-[9px] font-bold text-slate-400 px-1 opacity-60">
              <span>Reserved By: {booking.reservationBy || "Direct"}</span>
@@ -695,12 +787,14 @@ const ViewBookingModal: React.FC<{
 };
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [view, setView] = useState<ViewType>('ADMIN');
   const [adminPage, setAdminPage] = useState<AdminPage>('DASHBOARD');
   const [rooms] = useState<Room[]>(generateRooms());
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [viewingBooking, setViewingBooking] = useState<Booking | null>(null);
+  const [systemTime, setSystemTime] = useState(new Date());
   
   // Search Filters for Bookings
   const [searchTerm, setSearchTerm] = useState('');
@@ -715,10 +809,13 @@ const App: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [bookingToDelete, setBookingToDelete] = useState<string | null>(null);
 
+  // Live Clock Update
+  useEffect(() => {
+    const timer = setInterval(() => setSystemTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const todayStr = new Date().toISOString().split('T')[0];
-  const tomorrowDate = new Date();
-  tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-  const tomorrowStr = tomorrowDate.toISOString().split('T')[0];
 
   const handleSaveBooking = (booking: Booking) => {
     setBookings(prev => {
@@ -880,12 +977,18 @@ const App: React.FC = () => {
           </button>
         ))}
       </nav>
-      <div className="pt-8 border-t border-slate-800">
+      <div className="pt-8 border-t border-slate-800 space-y-1">
         <button 
           onClick={() => setView('PUBLIC')}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 hover:text-white transition-colors"
         >
           <span>👁️</span> Public View
+        </button>
+        <button 
+          onClick={() => setIsAuthenticated(false)}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-500 hover:text-rose-500 transition-colors"
+        >
+          <span>🚪</span> Logout
         </button>
       </div>
     </div>
@@ -912,7 +1015,7 @@ const App: React.FC = () => {
             onClick={() => setView('ADMIN')}
             className="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-95"
           >
-            Staff Login
+            Staff Dashboard
           </button>
         </div>
       </header>
@@ -939,10 +1042,32 @@ const App: React.FC = () => {
 
   const AdminDashboard = () => (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <header>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Operational Insights</h1>
-        <p className="text-slate-500 font-medium mt-1">Key performance metrics for today.</p>
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Operational Insights</h1>
+          <p className="text-slate-500 font-medium mt-1">Key performance metrics for today.</p>
+        </div>
+        
+        <div className="bg-white px-5 py-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+          <div className="relative">
+            <div className="w-3 h-3 bg-teal-500 rounded-full animate-ping absolute inset-0"></div>
+            <div className="w-3 h-3 bg-teal-500 rounded-full relative"></div>
+          </div>
+          <div className="text-right border-l border-slate-100 pl-4">
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Live Sync System</p>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-500 uppercase">
+                {systemTime.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+              <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+              <span className="text-sm font-black text-slate-800 font-mono">
+                {systemTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </span>
+            </div>
+          </div>
+        </div>
       </header>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { label: 'Total Rooms', val: stats.total, icon: '🏠', color: 'bg-blue-600' },
@@ -959,6 +1084,7 @@ const App: React.FC = () => {
           </div>
         ))}
       </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
           <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-2">
@@ -1001,6 +1127,7 @@ const App: React.FC = () => {
             </div>
           )}
         </div>
+        
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
           <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-2">
             <span className="w-2 h-8 bg-blue-500 rounded-full"></span>
@@ -1031,6 +1158,10 @@ const App: React.FC = () => {
       </div>
     </div>
   );
+
+  if (!isAuthenticated) {
+    return <LoginPage onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <div className="min-h-screen font-['Inter']">
