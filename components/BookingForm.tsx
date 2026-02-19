@@ -20,6 +20,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ rooms, initialData, onSave, o
     bookingDate: new Date().toISOString().split('T')[0],
     checkInDate: '',
     checkOutDate: '',
+    checkInTime: '14:00',
+    checkOutTime: '12:00',
     nights: 1,
     qtyPax: 1,
     mealPlan: MealPlan.RO,
@@ -42,6 +44,16 @@ const BookingForm: React.FC<BookingFormProps> = ({ rooms, initialData, onSave, o
         price: ROOM_PRICES[room.type]
       }));
     }
+  };
+
+  const handleMealPlanChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedPlan = e.target.value as MealPlan;
+    setFormData(prev => ({
+      ...prev,
+      mealPlan: selectedPlan,
+      // If RO is selected, Qty/Pax becomes 0 automatically
+      qtyPax: selectedPlan === MealPlan.RO ? 0 : (prev.qtyPax === 0 ? 1 : prev.qtyPax)
+    }));
   };
 
   useEffect(() => {
@@ -136,7 +148,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rooms, initialData, onSave, o
           <input readOnly value={formData.roomType || ''} className={`${inputClass} bg-slate-50 text-slate-500`} />
         </div>
 
-        <div>
+        <div className="md:col-span-2">
           <label className={labelClass}>Guest Name</label>
           <input 
             required
@@ -148,7 +160,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rooms, initialData, onSave, o
           />
         </div>
 
-        <div>
+        <div className="md:col-span-2">
           <label className={labelClass}>Phone Number</label>
           <input 
             required
@@ -161,7 +173,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rooms, initialData, onSave, o
         </div>
 
         <div>
-          <label className={labelClass}>Check In</label>
+          <label className={labelClass}>Check In Date</label>
           <input 
             required
             type="date" 
@@ -172,13 +184,33 @@ const BookingForm: React.FC<BookingFormProps> = ({ rooms, initialData, onSave, o
         </div>
 
         <div>
-          <label className={labelClass}>Check Out</label>
+          <label className={labelClass}>Check In Time</label>
+          <input 
+            type="time" 
+            value={formData.checkInTime || '14:00'}
+            className={inputClass} 
+            onChange={e => setFormData(p => ({...p, checkInTime: e.target.value}))}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Check Out Date</label>
           <input 
             required
             type="date" 
             value={formData.checkOutDate || ''}
             className={inputClass} 
             onChange={e => setFormData(p => ({...p, checkOutDate: e.target.value}))}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Check Out Time</label>
+          <input 
+            type="time" 
+            value={formData.checkOutTime || '12:00'}
+            className={inputClass} 
+            onChange={e => setFormData(p => ({...p, checkOutTime: e.target.value}))}
           />
         </div>
 
@@ -191,10 +223,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ rooms, initialData, onSave, o
             <label className={labelClass}>Qty/Pax</label>
             <input 
               type="number" 
-              min="1"
+              min="0"
               value={formData.qtyPax}
               className={inputClass} 
-              onChange={e => setFormData(p => ({...p, qtyPax: parseInt(e.target.value) || 1}))}
+              onChange={e => setFormData(p => ({...p, qtyPax: parseInt(e.target.value) || 0}))}
+              // Disable if RO since it's forced to 0
+              readOnly={formData.mealPlan === MealPlan.RO}
             />
           </div>
         </div>
@@ -217,7 +251,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rooms, initialData, onSave, o
           <select 
             className={inputClass}
             value={formData.mealPlan}
-            onChange={e => setFormData(p => ({...p, mealPlan: e.target.value as MealPlan}))}
+            onChange={handleMealPlanChange}
           >
             {Object.values(MealPlan).map(v => <option key={v} value={v}>{v}</option>)}
           </select>
@@ -245,7 +279,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ rooms, initialData, onSave, o
           </select>
         </div>
 
-        <div>
+        <div className="md:col-span-1">
           <label className={labelClass}>Reservation By</label>
           <input 
             type="text" 

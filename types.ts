@@ -11,7 +11,8 @@ export enum PaymentStatus {
   TF = 'TF',
   KREDIT = 'Kredit',
   QRIS = 'Qris',
-  BY_OTA = 'By OTA'
+  BY_OTA = 'By OTA',
+  COMPLIMENT = 'Compliment'
 }
 
 export enum PaymentMethod {
@@ -42,6 +43,8 @@ export interface Booking {
   guestName: string;
   checkInDate: string;
   checkOutDate: string;
+  checkInTime?: string;
+  checkOutTime?: string;
   nights: number;
   phone: string;
   price: number;
@@ -51,6 +54,7 @@ export interface Booking {
   paymentMethod: PaymentMethod;
   reservationBy: string;
   notes: string;
+  breakfastNotes?: string; // Catatan khusus departemen F&B
 }
 
 export interface Room {
@@ -61,4 +65,4 @@ export interface Room {
 }
 
 export type ViewType = 'PUBLIC' | 'ADMIN';
-export type AdminPage = 'DASHBOARD' | 'ROOMS' | 'BOOKINGS' | 'NEW_BOOKING' | 'REPORTS';
+export type AdminPage = 'DASHBOARD' | 'ROOMS' | 'BOOKINGS' | 'NEW_BOOKING' | 'REPORTS' | 'GUEST_LIST' | 'BREAKFAST';
